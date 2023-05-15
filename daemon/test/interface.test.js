@@ -1,32 +1,36 @@
-const Interface = require('../main/interface');
-const nock = require('nock');
+const Interface = require("../main/interface");
+const nock = require("nock");
 
-const daemons = [{
-  'host': '127.0.0.1',
-  'port': '8766',
-  'username': 'foundation',
-  'password': 'foundation'
-}];
+const daemons = [
+  {
+    host: "127.0.0.1",
+    port: "3632",
+    username: "foundation",
+    password: "foundation",
+  },
+];
 
-const multiDaemons = [{
-  'host': '127.0.0.1',
-  'port': '8766',
-  'username': 'foundation',
-  'password': 'foundation'
-}, {
-  'host': '127.0.0.2',
-  'port': '8766',
-  'username': 'foundation',
-  'password': 'foundation'
-}];
+const multiDaemons = [
+  {
+    host: "127.0.0.1",
+    port: "3632",
+    username: "foundation",
+    password: "foundation",
+  },
+  {
+    host: "127.0.0.2",
+    port: "3632",
+    username: "foundation",
+    password: "foundation",
+  },
+];
 
 nock.disableNetConnect();
-nock.enableNetConnect('127.0.0.1');
+nock.enableNetConnect("127.0.0.1");
 
 ////////////////////////////////////////////////////////////////////////////////
 
-describe('Test interface functionality', () => {
-
+describe("Test interface functionality", () => {
   let daemonsCopy, multiDaemonsCopy;
   beforeEach(() => {
     daemonsCopy = JSON.parse(JSON.stringify(daemons));
@@ -40,170 +44,390 @@ describe('Test interface functionality', () => {
     nock.enableNetConnect();
   });
 
-  test('Test interface initialization [1]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/', (body) => body.method === 'getpeerinfo')
-      .reply(200, JSON.stringify({
-        error: null,
-        result: null,
-        instance: 'nocktest',
-      }));
+  test("Test interface initialization [1]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/", (body) => body.method === "getpeerinfo")
+      .reply(
+        200,
+        JSON.stringify({
+          error: null,
+          result: null,
+          instance: "nocktest",
+        })
+      );
     const daemon = new Interface(daemonsCopy);
-    daemon.on('online', () => done());
+    daemon.on("online", () => done());
     daemon.checkInitialized();
   });
 
-  test('Test interface initialization [2]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/', (body) => body.method === 'getpeerinfo')
-      .reply(200, JSON.stringify({
-        error: null,
-        result: null,
-        instance: 'nocktest',
-      }));
-    nock('http://127.0.0.2:8766')
-      .post('/', (body) => body.method === 'getpeerinfo')
-      .reply(200, JSON.stringify({
-        error: null,
-        result: null,
-        instance: 'nocktest',
-      }));
+  test("Test interface initialization [2]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/", (body) => body.method === "getpeerinfo")
+      .reply(
+        200,
+        JSON.stringify({
+          error: null,
+          result: null,
+          instance: "nocktest",
+        })
+      );
+    nock("http://127.0.0.2:3632")
+      .post("/", (body) => body.method === "getpeerinfo")
+      .reply(
+        200,
+        JSON.stringify({
+          error: null,
+          result: null,
+          instance: "nocktest",
+        })
+      );
     const multiDaemon = new Interface(multiDaemonsCopy);
-    multiDaemon.on('online', () => done());
+    multiDaemon.on("online", () => done());
     multiDaemon.checkInitialized();
   });
 
-  test('Test interface initialization [3]', (done) => {
+  test("Test interface initialization [3]", (done) => {
     const daemon = new Interface(daemonsCopy);
-    daemon.on('failed', () => done());
+    daemon.on("failed", () => done());
     daemon.checkInitialized();
   });
 
-  test('Test interface commands [1]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/', (body) => body.method === 'getblocktemplate')
-      .reply(200, JSON.stringify({
-        error: null,
-        result: null,
-        instance: 'nocktest',
-      }));
+  test("Test interface commands [1]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/", (body) => body.method === "getblocktemplate")
+      .reply(
+        200,
+        JSON.stringify({
+          error: null,
+          result: null,
+          instance: "nocktest",
+        })
+      );
     const daemon = new Interface(daemonsCopy);
-    const requests = [['getblocktemplate', []]];
-    const expected = [{'data': '{"error":null,"result":null,"instance":"nocktest"}', 'error': null, 'instance': { 'host': '127.0.0.1', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 0 }, 'response': null}];
-    daemon.sendCommands(requests, false, (response) => {
-      expect(response).toStrictEqual(expected);
-      done();
-    });
-  });
-
-  test('Test interface commands [2]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/', (body) => body.method === 'getblocktemplate')
-      .reply(401, JSON.stringify({
-        error: true,
-        result: null,
-        instance: 'nocktest',
-      }));
-    const daemon = new Interface(daemonsCopy);
-    const requests = [['getblocktemplate', []]];
-    const expected = [{'data': '{"error":true,"result":null,"instance":"nocktest"}', 'error': {'code': -1, 'message': 'Unauthorized RPC access. Invalid RPC username or password'}, 'instance': {'host': '127.0.0.1', 'index': 0, 'password': 'foundation', 'port': '8766', 'username': 'foundation'}, 'response': null}];
-    daemon.sendCommands(requests, false, (response) => {
-      expect(response).toStrictEqual(expected);
-      done();
-    });
-  });
-
-  test('Test interface commands [3]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/').reply(200, JSON.stringify([
-        { id: 'nocktest', error: null, result: null },
-        { id: 'nocktest', error: null, result: null },
-      ]));
-    const daemon = new Interface(daemonsCopy);
-    const requests = [['getblocktemplate', []], ['getpeerinfo', []]];
-    const expected = [[{'error': null, 'response': null, 'instance': { 'host': '127.0.0.1', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 0 }, 'data': '{"id":"nocktest","error":null,"result":null}'},{'error': null, 'response': null, 'instance': { 'host': '127.0.0.1', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 0 }, 'data': '{"id":"nocktest","error":null,"result":null}'}]];
-    daemon.sendCommands(requests, false, (response) => {
-      expect(response).toStrictEqual(expected);
-      done();
-    });
-  });
-
-  test('Test interface commands [4]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/').reply(200, JSON.stringify([
-        { id: 'nocktest', error: null, result: null },
-        { id: 'nocktest', error: null, result: null },
-      ]));
-    nock('http://127.0.0.2:8766')
-      .post('/').reply(200, JSON.stringify([
-        { id: 'nocktest', error: null, result: null },
-        { id: 'nocktest', error: null, result: null },
-      ]));
-    const multiDaemon = new Interface(multiDaemonsCopy);
-    const requests = [['getblocktemplate', []], ['getpeerinfo', []]];
+    const requests = [["getblocktemplate", []]];
     const expected = [
-      [{'error': null, 'response': null, 'instance': { 'host': '127.0.0.1', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 0 }, 'data': '{"id":"nocktest","error":null,"result":null}'},{'error': null, 'response': null, 'instance': { 'host': '127.0.0.1', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 0 }, 'data': '{"id":"nocktest","error":null,"result":null}'}],
-      [{'error': null, 'response': null, 'instance': { 'host': '127.0.0.2', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 1 }, 'data': '{"id":"nocktest","error":null,"result":null}'},{'error': null, 'response': null, 'instance': { 'host': '127.0.0.2', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 1 }, 'data': '{"id":"nocktest","error":null,"result":null}'}]];
+      {
+        data: '{"error":null,"result":null,"instance":"nocktest"}',
+        error: null,
+        instance: {
+          host: "127.0.0.1",
+          port: "3632",
+          username: "foundation",
+          password: "foundation",
+          index: 0,
+        },
+        response: null,
+      },
+    ];
+    daemon.sendCommands(requests, false, (response) => {
+      expect(response).toStrictEqual(expected);
+      done();
+    });
+  });
+
+  test("Test interface commands [2]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/", (body) => body.method === "getblocktemplate")
+      .reply(
+        401,
+        JSON.stringify({
+          error: true,
+          result: null,
+          instance: "nocktest",
+        })
+      );
+    const daemon = new Interface(daemonsCopy);
+    const requests = [["getblocktemplate", []]];
+    const expected = [
+      {
+        data: '{"error":true,"result":null,"instance":"nocktest"}',
+        error: {
+          code: -1,
+          message: "Unauthorized RPC access. Invalid RPC username or password",
+        },
+        instance: {
+          host: "127.0.0.1",
+          index: 0,
+          password: "foundation",
+          port: "3632",
+          username: "foundation",
+        },
+        response: null,
+      },
+    ];
+    daemon.sendCommands(requests, false, (response) => {
+      expect(response).toStrictEqual(expected);
+      done();
+    });
+  });
+
+  test("Test interface commands [3]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/")
+      .reply(
+        200,
+        JSON.stringify([
+          { id: "nocktest", error: null, result: null },
+          { id: "nocktest", error: null, result: null },
+        ])
+      );
+    const daemon = new Interface(daemonsCopy);
+    const requests = [
+      ["getblocktemplate", []],
+      ["getpeerinfo", []],
+    ];
+    const expected = [
+      [
+        {
+          error: null,
+          response: null,
+          instance: {
+            host: "127.0.0.1",
+            port: "3632",
+            username: "foundation",
+            password: "foundation",
+            index: 0,
+          },
+          data: '{"id":"nocktest","error":null,"result":null}',
+        },
+        {
+          error: null,
+          response: null,
+          instance: {
+            host: "127.0.0.1",
+            port: "3632",
+            username: "foundation",
+            password: "foundation",
+            index: 0,
+          },
+          data: '{"id":"nocktest","error":null,"result":null}',
+        },
+      ],
+    ];
+    daemon.sendCommands(requests, false, (response) => {
+      expect(response).toStrictEqual(expected);
+      done();
+    });
+  });
+
+  test("Test interface commands [4]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/")
+      .reply(
+        200,
+        JSON.stringify([
+          { id: "nocktest", error: null, result: null },
+          { id: "nocktest", error: null, result: null },
+        ])
+      );
+    nock("http://127.0.0.2:3632")
+      .post("/")
+      .reply(
+        200,
+        JSON.stringify([
+          { id: "nocktest", error: null, result: null },
+          { id: "nocktest", error: null, result: null },
+        ])
+      );
+    const multiDaemon = new Interface(multiDaemonsCopy);
+    const requests = [
+      ["getblocktemplate", []],
+      ["getpeerinfo", []],
+    ];
+    const expected = [
+      [
+        {
+          error: null,
+          response: null,
+          instance: {
+            host: "127.0.0.1",
+            port: "3632",
+            username: "foundation",
+            password: "foundation",
+            index: 0,
+          },
+          data: '{"id":"nocktest","error":null,"result":null}',
+        },
+        {
+          error: null,
+          response: null,
+          instance: {
+            host: "127.0.0.1",
+            port: "3632",
+            username: "foundation",
+            password: "foundation",
+            index: 0,
+          },
+          data: '{"id":"nocktest","error":null,"result":null}',
+        },
+      ],
+      [
+        {
+          error: null,
+          response: null,
+          instance: {
+            host: "127.0.0.2",
+            port: "3632",
+            username: "foundation",
+            password: "foundation",
+            index: 1,
+          },
+          data: '{"id":"nocktest","error":null,"result":null}',
+        },
+        {
+          error: null,
+          response: null,
+          instance: {
+            host: "127.0.0.2",
+            port: "3632",
+            username: "foundation",
+            password: "foundation",
+            index: 1,
+          },
+          data: '{"id":"nocktest","error":null,"result":null}',
+        },
+      ],
+    ];
     multiDaemon.sendCommands(requests, false, (response) => {
       expect(response).toStrictEqual(expected);
       done();
     });
   });
 
-  test('Test interface commands [5]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/').reply(200, JSON.stringify([
-        { id: 'nocktest', error: null, result: null },
-        { id: 'nocktest', error: null, result: null },
-      ]));
+  test("Test interface commands [5]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/")
+      .reply(
+        200,
+        JSON.stringify([
+          { id: "nocktest", error: null, result: null },
+          { id: "nocktest", error: null, result: null },
+        ])
+      );
     const daemon = new Interface(daemonsCopy);
-    const requests = [['getblocktemplate', []], ['getpeerinfo', []]];
-    const expected = [{'error': null, 'response': null, 'instance': { 'host': '127.0.0.1', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 0 }, 'data': '{"id":"nocktest","error":null,"result":null}'},{'error': null, 'response': null, 'instance': { 'host': '127.0.0.1', 'port': '8766', 'username': 'foundation', 'password': 'foundation', 'index': 0 }, 'data': '{"id":"nocktest","error":null,"result":null}'}];
+    const requests = [
+      ["getblocktemplate", []],
+      ["getpeerinfo", []],
+    ];
+    const expected = [
+      {
+        error: null,
+        response: null,
+        instance: {
+          host: "127.0.0.1",
+          port: "3632",
+          username: "foundation",
+          password: "foundation",
+          index: 0,
+        },
+        data: '{"id":"nocktest","error":null,"result":null}',
+      },
+      {
+        error: null,
+        response: null,
+        instance: {
+          host: "127.0.0.1",
+          port: "3632",
+          username: "foundation",
+          password: "foundation",
+          index: 0,
+        },
+        data: '{"id":"nocktest","error":null,"result":null}',
+      },
+    ];
     daemon.sendCommands(requests, true, (response) => {
       expect(response).toStrictEqual(expected);
       done();
     });
   });
 
-  test('Test interface commands [6]', (done) => {
+  test("Test interface commands [6]", (done) => {
     const daemon = new Interface(daemonsCopy);
-    const expected = {'data': null, 'error': {'code': -1, 'message': 'No commands passed to daemon'}, 'instance': null, 'response': null};
+    const expected = {
+      data: null,
+      error: { code: -1, message: "No commands passed to daemon" },
+      instance: null,
+      response: null,
+    };
     daemon.sendCommands([], false, (response) => {
       expect(response).toStrictEqual(expected);
       done();
     });
   });
 
-  test('Test interface commands [7]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/', (body) => body.method === 'getblocktemplate')
+  test("Test interface commands [7]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/", (body) => body.method === "getblocktemplate")
       .reply(200, null);
     const daemon = new Interface(daemonsCopy);
-    const requests = [['getblocktemplate', []]];
-    const expected = [{'data': 'null', 'error': {'code': -1, 'message': 'Could not parse RPC data from daemon response'}, 'instance': {'host': '127.0.0.1', 'index': 0, 'password': 'foundation', 'port': '8766', 'username': 'foundation'}, 'response': null}];
+    const requests = [["getblocktemplate", []]];
+    const expected = [
+      {
+        data: "null",
+        error: {
+          code: -1,
+          message: "Could not parse RPC data from daemon response",
+        },
+        instance: {
+          host: "127.0.0.1",
+          index: 0,
+          password: "foundation",
+          port: "3632",
+          username: "foundation",
+        },
+        response: null,
+      },
+    ];
     daemon.sendCommands(requests, false, (response) => {
       expect(response).toStrictEqual(expected);
       done();
     });
   });
 
-  test('Test interface commands [8]', (done) => {
-    nock('http://127.0.0.1:8766')
-      .post('/', (body) => body.method === 'getblocktemplate')
-      .reply(200, 'blajahahge');
+  test("Test interface commands [8]", (done) => {
+    nock("http://127.0.0.1:3632")
+      .post("/", (body) => body.method === "getblocktemplate")
+      .reply(200, "blajahahge");
     const daemon = new Interface(daemonsCopy);
-    const requests = [['getblocktemplate', []]];
-    const expected = [{'data': 'blajahahge', 'error': {'code': -1, 'message': 'Could not parse RPC data from daemon response'}, 'instance': {'host': '127.0.0.1', 'index': 0, 'password': 'foundation', 'port': '8766', 'username': 'foundation'}, 'response': null}];
+    const requests = [["getblocktemplate", []]];
+    const expected = [
+      {
+        data: "blajahahge",
+        error: {
+          code: -1,
+          message: "Could not parse RPC data from daemon response",
+        },
+        instance: {
+          host: "127.0.0.1",
+          index: 0,
+          password: "foundation",
+          port: "3632",
+          username: "foundation",
+        },
+        response: null,
+      },
+    ];
     daemon.sendCommands(requests, false, (response) => {
       expect(response).toStrictEqual(expected);
       done();
     });
   });
 
-  test('Test interface commands [9]', (done) => {
+  test("Test interface commands [9]", (done) => {
     const daemon = new Interface(daemonsCopy);
-    const requests = [['getblocktemplate', []]];
-    const expected = {'data': null, 'error': {'code': -1, 'message': 'connect ECONNREFUSED 127.0.0.1:8766'}, 'instance': {'host': '127.0.0.1', 'index': 0, 'password': 'foundation', 'port': '8766', 'username': 'foundation'}, 'response': null};
+    const requests = [["getblocktemplate", []]];
+    const expected = {
+      data: null,
+      error: { code: -1, message: "connect ECONNREFUSED 127.0.0.1:3632" },
+      instance: {
+        host: "127.0.0.1",
+        index: 0,
+        password: "foundation",
+        port: "3632",
+        username: "foundation",
+      },
+      response: null,
+    };
     daemon.sendCommands(requests, true, (response) => {
       expect(response).toStrictEqual(expected);
       done();

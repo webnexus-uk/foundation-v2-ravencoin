@@ -1,5 +1,5 @@
 {
-  "name": "foundation-v2-ravencoin",
+  "name": "foundation-v2-gamepass",
   "version": "0.0.23",
   "description": "A high performance Stratum pool-server written in Node.js",
   "main": "./exports.js",
@@ -9,9 +9,9 @@
     "mining",
     "pool"
   ],
-  "homepage": "https://github.com/blinkhash/foundation-v2-ravencoin",
+  "homepage": "https://github.com/blinkhash/foundation-v2-gamepass",
   "bugs": {
-    "url": "https://github.com/blinkhash/foundation-v2-ravencoin/issues"
+    "url": "https://github.com/blinkhash/foundation-v2-gamepass/issues"
   },
   "license": "GPL-3.0",
   "author": {
@@ -39,7 +39,7 @@
   "contributors": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/blinkhash/foundation-v2-ravencoin.git"
+    "url": "https://github.com/blinkhash/foundation-v2-gamepass.git"
   },
   "dependencies": {
     "async": "^3.2.3",

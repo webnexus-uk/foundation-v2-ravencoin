@@ -1,6 +1,6 @@
 /*
  *
- * Example (Ravencoin)
+ * Example (GamePass)
  *
  */
 
@@ -52,42 +52,42 @@ config.ports.push(ports1);
 
 // Miscellaneous Configuration
 config.primary = {};
-config.primary.address = '[address]';
+config.primary.address = "[address]";
 
 // Coin Configuration
 config.primary.coin = {};
-config.primary.coin.name = 'Ravencoin';
-config.primary.coin.symbol = 'RVN';
-config.primary.coin.algorithm = 'kawpow';
+config.primary.coin.name = "GamePass";
+config.primary.coin.symbol = "GPN";
+config.primary.coin.algorithm = "kawpow";
 
 // Daemon Configuration
 config.primary.daemons = [];
 
 const daemons1 = {};
-daemons1.host = '127.0.0.1';
-daemons1.port = 8766;
-daemons1.username = '';
-daemons1.password = '';
+daemons1.host = "127.0.0.1";
+daemons1.port = 3632;
+daemons1.username = "";
+daemons1.password = "";
 config.primary.daemons.push(daemons1);
 
 // Recipients Configuration
 config.primary.recipients = [];
 
 const recipient1 = {};
-recipient1.address = '[address]';
+recipient1.address = "[address]";
 recipient1.percentage = 0.05;
 config.primary.recipients.push(recipient1);
 
 // Blinkhash Donation Address
 const recipient2 = {};
-recipient2.address = 'RUYstAgw1k9WQkjCASjfKo6HsUM1bD4f3j';
+recipient2.address = "RUYstAgw1k9WQkjCASjfKo6HsUM1bD4f3j";
 recipient2.percentage = 0.001;
 config.primary.recipients.push(recipient2);
 
 // ZMQ Configuration
 config.primary.zmq = {};
 config.primary.zmq.enabled = false;
-config.primary.zmq.host = '127.0.0.1';
+config.primary.zmq.host = "127.0.0.1";
 config.primary.zmq.port = 29000;
 
 // Export Configuration

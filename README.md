@@ -1,11 +1,11 @@
-# Foundation Stratum (Ravencoin, v2)
+# Foundation Stratum (GamePass, v2)
 
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/blinkhash/foundation-v2-ravencoin.svg?style=flat-square)](https://codecov.io/gh/blinkhash/foundation-v2-ravencoin/)
-[![Foundation CI](https://github.com/blinkhash/foundation-v2-ravencoin/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/blinkhash/foundation-v2-ravencoin/actions/workflows/build.yml)
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/blinkhash/foundation-v2-gamepass.svg?style=flat-square)](https://codecov.io/gh/blinkhash/foundation-v2-gamepass/)
+[![Foundation CI](https://github.com/blinkhash/foundation-v2-gamepass/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/blinkhash/foundation-v2-gamepass/actions/workflows/build.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Downloads](https://img.shields.io/npm/dm/foundation-v2-ravencoin.svg)](https://www.npmjs.com/package/foundation-v2-ravencoin)
-[![Version](https://img.shields.io/npm/v/foundation-v2-ravencoin.svg)](https://www.npmjs.com/package/foundation-v2-ravencoin)
-[![Known Vulnerabilities](https://snyk.io/test/npm/foundation-v2-ravencoin/badge.svg)](https://snyk.io/test/npm/foundation-v2-ravencoin)
+[![Downloads](https://img.shields.io/npm/dm/foundation-v2-gamepass.svg)](https://www.npmjs.com/package/foundation-v2-gamepass)
+[![Version](https://img.shields.io/npm/v/foundation-v2-gamepass.svg)](https://www.npmjs.com/package/foundation-v2-gamepass)
+[![Known Vulnerabilities](https://snyk.io/test/npm/foundation-v2-gamepass/badge.svg)](https://snyk.io/test/npm/foundation-v2-gamepass)
 [![Discord](https://img.shields.io/discord/738590795384356904)](https://discord.gg/rNjez6VgNF)
 
 This portal is a high performance stratum server written entirely in Node.js. This server itself was built to be efficient, transparent, and easy to setup, while still maintaining greater scalability than many of the other open-source stratum servers. While this module will allow you to connect and mine directly on the a coin's blockchain, it doesn't include support for an API, payment processor, or share handler. For a complete server that includes these features and allows you to integrate multiple of these modules, see [here](https://github.com/blinkhash/foundation-v2-server).
@@ -25,7 +25,7 @@ Maintaining this project has always been driven out of nothing more than a desir
 - Dogecoin: DQTiorDQCUmDXtu8aA83VBAn3E9ARfQEez
 - Ethereum: 0x923Ba122453d44bf614c6ee377A236970772952B
 - Litecoin: M8hA7wbyw39qChoDYerR1Gyp9pdDCZvpvz
-- Ravencoin: RUYstAgw1k9WQkjCASjfKo6HsUM1bD4f3j
+- GamePass: RUYstAgw1k9WQkjCASjfKo6HsUM1bD4f3j
 - ZCash: t1NvXnerxQPnoUsYruaPFMRTijEZ1KKqDSR
 
 ---
